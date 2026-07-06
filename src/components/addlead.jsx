@@ -1,43 +1,33 @@
 import { useState, useRef, useEffect } from "react";
-import { X, Search } from "lucide-react";
+import { X } from "lucide-react";
 
 const allSections = [
   "General Information",
   "Communication",
   "Location",
   "Professional",
-  "Requirement",
-];
+  ];
 
-const requiredSections = [
-  "General Information",
-  "Communication",
-];
 
 export default function AddLeadModal({ onClose }) {
-  const [showRequired, setShowRequired] = useState(false);
   const [activeSection, setActiveSection] = useState("General Information");
 
   const [form, setForm] = useState({
     firstName: "",
+    source: "",
     lastName: "",
-    owner: "",
     emails: [""],
     phones: [""],
     city: "",
     state: "",
     company: "",
-    designation: "",
-    requirement: "",
   });
 
   const sectionRefs = useRef({});
 
-  // Visible sections based on toggle
-  const visibleSections = showRequired ? requiredSections : allSections;
+  const visibleSections = allSections;
 
-  const isVisible = (section) =>
-    !showRequired || requiredSections.includes(section);
+  const isVisible = () => true;
 
   // Scroll to section
   const scrollTo = (section) => {
@@ -66,13 +56,7 @@ export default function AddLeadModal({ onClose }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [visibleSections]);
 
-  // Auto scroll when toggle ON
-  useEffect(() => {
-    if (showRequired) {
-      scrollTo("General Information");
-    }
-  }, [showRequired]);
-
+  
   const updateField = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   };
@@ -113,17 +97,6 @@ export default function AddLeadModal({ onClose }) {
               </div>
             ))}
           </div>
-
-          {/* SEARCH */}
-          <div className="mt-auto">
-            <div className="relative mt-4">
-              <Search className="w-4 h-4 absolute left-2 top-2.5 text-gray-400" />
-              <input
-                placeholder="Search Fields"
-                className="w-full pl-7 pr-2 py-2 border rounded text-sm"
-              />
-            </div>
-          </div>
         </div>
 
         {/* CONTENT */}
@@ -136,14 +109,7 @@ export default function AddLeadModal({ onClose }) {
             </h2>
 
             <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={showRequired}
-                  onChange={() => setShowRequired(!showRequired)}
-                />
-                Show Required & Important Fields
-              </label>
+              
 
               <button onClick={onClose}>
                 <X />
@@ -182,37 +148,29 @@ export default function AddLeadModal({ onClose }) {
 
                   <div>
                     <label className="text-xs text-gray-500">
-                      Last Name *
+                      Last Name 
                     </label>
                     <input
-                      className={`w-full border rounded px-3 py-2 ${
-                        !form.lastName ? "border-red-500" : ""
-                      }`}
+                     className="w-full border rounded px-3 py-2"
                       value={form.lastName}
                       onChange={(e) =>
                         updateField("lastName", e.target.value)
                       }
                     />
-                    {!form.lastName && (
-                      <p className="text-red-500 text-xs mt-1">
-                        This is a required field
-                      </p>
-                    )}
-                  </div>
 
+                  </div>
+                </div>
                   <div>
                     <label className="text-xs text-gray-500">
-                      Owner *
+                      Source
                     </label>
                     <input
                       className="w-full border rounded px-3 py-2"
-                      value={form.owner}
-                      onChange={(e) =>
-                        updateField("owner", e.target.value)
-                      }
+                      value={form.source}
+                      onChange={(e)=>updateField("source", e.target.value)}
                     />
                   </div>
-                </div>
+
               </section>
             )}
 
@@ -285,7 +243,7 @@ export default function AddLeadModal({ onClose }) {
                 {/* PHONES */}
                 <div>
                     <label className="text-xs text-gray-500">
-                    Phone Numbers
+                    Contact Number
                     </label>
 
                     {form.phones.map((phone, i) => (
@@ -348,13 +306,8 @@ export default function AddLeadModal({ onClose }) {
                 </div>
                 </div>
 
-                {/* DND */}
-                <div className="mt-4 flex items-center gap-2">
-                <input type="checkbox" />
-                <span className="text-sm text-gray-600">
-                    Do Not Disturb
-                </span>
-                </div>
+        
+          
             </section>
             )}
             
@@ -368,74 +321,40 @@ export default function AddLeadModal({ onClose }) {
                 <h3 className="font-semibold mb-4">Location</h3>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    placeholder="City"
-                    className="border rounded px-3 py-2"
-                    onChange={(e) =>
-                      updateField("city", e.target.value)
-                    }
-                  />
-                  <input
-                    placeholder="State"
-                    className="border rounded px-3 py-2"
-                    onChange={(e) =>
-                      updateField("state", e.target.value)
-                    }
-                  />
-                </div>
+<input placeholder="Address" className="border rounded px-3 py-2" />
+<input placeholder="Pincode" className="border rounded px-3 py-2" />
+<input placeholder="City" className="border rounded px-3 py-2" />
+<input placeholder="State" className="border rounded px-3 py-2" />
+</div>
               </section>
             )}
 
             {/* PROFESSIONAL */}
-            {isVisible("Professional") && (
-              <section
-                ref={(el) =>
-                  (sectionRefs.current["Professional"] = el)
-                }
-              >
-                <h3 className="font-semibold mb-4">
-                  Professional
-                </h3>
+            <section
+              ref={(el)=>(sectionRefs.current["Professional"]=el)}
+            >
+              <h3 className="font-semibold mb-4">Professional</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <input placeholder="Company Name" className="border rounded px-3 py-2"/>
+                <select className="border rounded px-3 py-2">
+                  <option>Select Status</option>
+                  <option>New</option><option>Contacted</option><option>Qualified</option><option>Won</option><option>Lost</option>
+                </select>
+                <select className="border rounded px-3 py-2">
+                  <option>Select Priority</option>
+                  <option>Low</option><option>Medium</option><option>High</option>
+                </select>
+                <input type="date" className="border rounded px-3 py-2"/>
+              </div>
+            </section>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    placeholder="Company"
-                    className="border rounded px-3 py-2"
-                    onChange={(e) =>
-                      updateField("company", e.target.value)
-                    }
-                  />
-                  <input
-                    placeholder="Designation"
-                    className="border rounded px-3 py-2"
-                    onChange={(e) =>
-                      updateField("designation", e.target.value)
-                    }
-                  />
-                </div>
-              </section>
-            )}
+            
+{/* Additional */}
+<section ref={(el)=>(sectionRefs.current["Requirement"]=el)}>
+<h3 className="font-semibold mb-4">Requirement</h3>
+<textarea className="w-full border rounded px-3 py-2 h-32" placeholder="Notes"></textarea>
+</section>
 
-            {/* REQUIREMENT */}
-            {isVisible("Requirement") && (
-              <section
-                ref={(el) =>
-                  (sectionRefs.current["Requirement"] = el)
-                }
-              >
-                <h3 className="font-semibold mb-4">
-                  Requirement
-                </h3>
-
-                <textarea
-                  className="w-full border rounded px-3 py-2 h-32"
-                  placeholder="Requirement..."
-                  onChange={(e) =>
-                    updateField("requirement", e.target.value)
-                  }
-                />
-              </section>
-            )}
           </div>
 
           {/* FOOTER */}
