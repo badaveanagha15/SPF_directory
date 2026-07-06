@@ -46,14 +46,14 @@ export default function AddDealDrawer({ isOpen, onClose }) {
 
       <div className="w-[65%] bg-white h-full flex flex-col shadow-xl">
         <div className="flex justify-between items-center px-6 py-4 border-b">
-          <h2 className="text-lg font-semibold">Add Deal (Finance)</h2>
+          <h2 className="text-lg font-semibold">Add Deal</h2>
           <button onClick={onClose}><X /></button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 space-y-8">
 
           <section>
-          
+            <h3 className="font-semibold mb-4">Customer Details</h3>
 
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -84,6 +84,7 @@ export default function AddDealDrawer({ isOpen, onClose }) {
           </section>
 
           <section>
+            <h3 className="font-semibold mb-4">Distributor Details</h3>
 
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -107,6 +108,7 @@ export default function AddDealDrawer({ isOpen, onClose }) {
             </div>
 
             <div className="mt-6 flex justify-between items-center">
+              <h4 className="font-medium">Distributor Cheques</h4>
               <button onClick={addCheque} className="text-blue-600 text-sm">+ Add Cheque</button>
             </div>
 

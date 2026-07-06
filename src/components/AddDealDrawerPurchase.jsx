@@ -79,11 +79,11 @@ export default function AddDealDrawer({ isOpen, onClose }) {
             <Input label="Upload F1 PO" name="uploadF1PO" type="file"/>
             <Input label="Delivery Details" name="deliveryDetails"/>
             <Input label="License Key" name="licenseKey"/>
-            <Input label="Name" name="distiName"/>
-            <Input label="Invoice Number" name="distiInvoiceNumber"/>
-            <Input label="Invoice Date" name="distiInvoiceDate" type="date"/>
-            <Input label="Invoice Value (Inc Tax)" name="distiInvoiceValueIncTax"/>
-            <Input label="Invoice" name="distiInvoice" type="file"/>
+            <Input label="Disti Name" name="distiName"/>
+            <Input label="Disti Invoice Number" name="distiInvoiceNumber"/>
+            <Input label="Disti Invoice Date" name="distiInvoiceDate" type="date"/>
+            <Input label="Disti Invoice Value (Inc Tax)" name="distiInvoiceValueIncTax"/>
+            <Input label="Disti Invoice" name="distiInvoice" type="file"/>
             <Input label="Other / Transport Expense" name="otherTransportExpense"/>
           </div>
         </div>
