@@ -1,9 +1,31 @@
 import {useState } from "react";
+import { UserPlus, AlertCircle, ArrowUpRight, Clock,ArrowRight , CheckCircle2, CalendarDays} from 'lucide-react';
 
 const Column = ({ title }) => {
   const [activeTab, setActiveTab] = useState("All");
 
   const tabs = ["All", "All My", "Shared"];
+
+  const stats = [
+    {
+      label: "New",
+      value: "12",
+      icon: UserPlus,
+      color: "blue",
+      trend: "+14%",
+      description: "Since last week"
+    },
+    {
+      label: "Needs Attention",
+      value: "05",
+      icon: AlertCircle,
+      color: "amber",
+      trend: "High Priority",
+      description: "Requires immediate follow-up"
+    }
+  ];
+
+ 
   /* DUMMY DATA */
 const smartlistData =
   title === "Leads"
@@ -25,28 +47,58 @@ const filteredData =
     : smartlistData.filter((item) => item.type === activeTab);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-6">
 
       {/* HEADER */}
       <div className="flex items-center gap-2 text-[15px] font-semibold">
         ☑ {title}
       </div>
 
-      {/* STAT CARDS */}
-      <div className="grid grid-cols-2 gap-4">
-        {["New", "Needs Attention"].map((label) => (
-          <div
-            key={label}
-            className="bg-white border border-gray-200 rounded p-4 hover:-translate-y-1 hover:shadow transition"
-          >
-            <div className="text-[11px] text-gray-500">
-              {label} {title}
-            </div>
-            <div className="text-[24px] font-bold">0</div>
-          </div>
-        ))}
-      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+      {stats.map((card) => (
+        <div
+          key={card.label}
+          className="group relative bg-white border border-slate-200 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:border-blue-500/30 cursor-pointer overflow-hidden"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              {/* Compact Icon Section */}
+              <div className={`p-2.5 rounded-lg transition-all duration-300 ${
+                card.color === 'blue' 
+                  ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' 
+                  : 'bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white'
+              }`}>
+                <card.icon size={18} strokeWidth={2.5} />
+              </div>
 
+              <div>
+                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  {card.label} {title}
+                </h3>
+                <div className="flex items-baseline space-x-1">
+                  <span className="text-2xl font-black text-slate-900 tracking-tight">
+                    {card.value}
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">UNITS</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Compact Trend Badge */}
+            <div className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-tighter ${
+              card.color === 'blue' ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
+            }`}>
+              {card.trend}
+            </div>
+          </div>
+          
+          {/* Subtle Bottom Accent */}
+          <div className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 group-hover:w-full w-0 ${
+            card.color === 'blue' ? 'bg-blue-500' : 'bg-amber-500'
+          }`} />
+        </div>
+      ))}
+    </div>
       {/* MAIN CARD */}
       <div className="bg-white border border-gray-200 rounded">
 
@@ -150,6 +202,37 @@ const TaskSection = () => {
     },
   ];
 
+   const taskStats = [
+    {
+      label: "Overdue",
+      value: "03",
+      icon: AlertCircle,
+      color: "red",
+      trend: "Immediate",
+    },
+    {
+      label: "Due Today",
+      value: "08",
+      icon: CalendarDays,
+      color: "blue",
+      trend: "Focus",
+    },
+    {
+      label: "Pending",
+      value: "12",
+      icon: Clock,
+      color: "slate",
+      trend: "Upcoming",
+    },
+    {
+      label: "Completed",
+      value: "45",
+      icon: CheckCircle2,
+      color: "green",
+      trend: "Weekly",
+    }
+  ];
+
   return (
     <div className="space-y-4">
 
@@ -161,18 +244,54 @@ const TaskSection = () => {
         <button className="text-sm text-blue-600">View All</button>
       </div>
 
-      {/* STAT CARDS */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white border rounded p-4">
-          <div className="text-xs text-gray-500">Pending Tasks</div>
-          <div className="text-2xl font-bold">12</div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+      {taskStats.map((stat) => (
+        <div
+          key={stat.label}
+          className="group relative bg-white border border-slate-200 rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:border-blue-500/30 cursor-pointer overflow-hidden"
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className={`p-2 rounded-lg transition-all duration-300 ${
+                stat.color === 'red' ? 'bg-red-50 text-red-600 group-hover:bg-red-600 group-hover:text-white' :
+                stat.color === 'blue' ? 'bg-blue-50 text-blue-600 group-hover:bg-blue-600 group-hover:text-white' :
+                stat.color === 'green' ? 'bg-green-50 text-green-600 group-hover:bg-green-600 group-hover:text-white' :
+                'bg-slate-50 text-slate-600 group-hover:bg-slate-600 group-hover:text-white'
+              }`}>
+                <stat.icon size={16} strokeWidth={2.5} />
+              </div>
 
-        <div className="bg-white border rounded p-4">
-          <div className="text-xs text-gray-500">Overdue Tasks</div>
-          <div className="text-2xl font-bold text-red-500">3</div>
+              <div>
+                <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                  {stat.label}
+                </h3>
+                <span className={`text-xl font-black tracking-tight ${
+                  stat.color === 'red' ? 'text-red-600' : 'text-slate-900'
+                }`}>
+                  {stat.value}
+                </span>
+              </div>
+            </div>
+
+            <div className={`px-1.5 py-0.5 rounded text-[8px] font-black uppercase ${
+              stat.color === 'red' ? 'bg-red-50 text-red-700' :
+              stat.color === 'blue' ? 'bg-blue-50 text-blue-700' :
+              stat.color === 'green' ? 'bg-green-50 text-green-700' :
+              'bg-slate-50 text-slate-700'
+            }`}>
+              {stat.trend}
+            </div>
+          </div>
+          
+          <div className={`absolute bottom-0 left-0 h-0.5 transition-all duration-300 group-hover:w-full w-0 ${
+            stat.color === 'red' ? 'bg-red-500' :
+            stat.color === 'blue' ? 'bg-blue-500' :
+            stat.color === 'green' ? 'bg-green-500' :
+            'bg-slate-500'
+          }`} />
         </div>
-      </div>
+      ))}
+    </div>
 
       {/* TABLE */}
       <div className="bg-white border rounded overflow-hidden">
@@ -254,69 +373,7 @@ export default function Dashboard() {
       <div className="ml-[60px] flex-1 flex flex-col">
 
         {/* HEADER */}
-        <header className="h-[56px] bg-white border-b border-gray-200 flex justify-between items-center px-6 sticky top-14 z-10 ">
-
-          {/* LEFT */}
-          <div className="flex items-center gap-4">
-
-            <div className="text-[15px] font-semibold">
-              <span className="text-blue-600">F1</span>&nbsp;
-              <span className="text-gray-400 font-light">Sales</span>
-            </div>
-
-            <div className="h-6 w-px bg-gray-300"></div>
-
-            <div className="text-sm cursor-pointer">
-              Default Dashboard ▼
-            </div>
-
-            <button className="bg-blue-600 text-white text-[13px] h-8 px-3 rounded">
-              + Create New
-            </button>
-          </div>
-
-          {/* RIGHT */}
-          <div className="flex items-center gap-6 text-sm text-gray-500">
-
-            <span>Qna</span>
-            <span>Learn</span>
-            <span>Demo</span>
-
-            {/* Notification */}
-            {/* <div className="relative">
-              🔔
-              <span className="absolute -top-2 -right-2 text-[10px] bg-gray-300 px-1 rounded-full">
-                0
-              </span>
-            </div> */}
-
-            {/* DATE NAV */}
-            <div className="flex items-center border rounded bg-white">
-              <button onClick={() => changeDate(-1)} className="px-2">
-                &lt;
-              </button>
-
-              <div className="px-4 text-center">
-                <div className="text-sm font-semibold">
-                   {isToday(date)
-                        ? "Today"
-                        : date.toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                    })}
-                </div>
-                <div className="text-[10px] text-gray-500">
-                  Tasks • Meetings
-                </div>
-              </div>
-
-              <button onClick={() => changeDate(1)} className="px-2">
-                &gt;
-              </button>
-            </div>
-          </div>
-        </header>
+        
 
         
   {/* CONTENT */}

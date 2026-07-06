@@ -1,244 +1,317 @@
 import { useState } from "react";
 import {
-  Plus,
-  MoreVertical,
   Search,
   RefreshCw,
   Pencil,
   X,
+  MoreVertical,
+  ClipboardList,
+  Calendar,
+  User,
+  CheckCircle2,
+  Trash2,
+  Share2,
+  Clock3,
+  AlertTriangle,
 } from "lucide-react";
 
 export default function Tasks() {
-  const [selectedTask, setSelectedTask] = useState(null);
   const [showDrawer, setShowDrawer] = useState(false);
   const [showQuick, setShowQuick] = useState(false);
 
-  const tasks = [
+  const [tasks, setTasks] = useState([
     {
       id: 1,
-      title: "New Task",
-      owner: "Rinku",
-      due: "Apr 25, 2026 at 11:59 pm",
+      title: "Follow up with ABC Client",
+      owner: "Rinku Singh",
+      due: "25 Apr 2026",
       status: "Open",
+      priority: "High",
+      notes: "",
     },
-  ];
+    {
+      id: 2,
+      title: "Prepare Proposal Deck",
+      owner: "Akshay",
+      due: "20 Apr 2026",
+      status: "Overdue",
+      priority: "Medium",
+      notes: "",
+    },
+  ]);
+
+  const [selectedTask, setSelectedTask] = useState(tasks[0]);
+
+  const handleComplete = () => {
+    const updated = tasks.map((task) =>
+      task.id === selectedTask.id
+        ? { ...task, status: "Completed" }
+        : task
+    );
+
+    setTasks(updated);
+    setSelectedTask({ ...selectedTask, status: "Completed" });
+  };
+
+  const getStatusBadge = (status) => {
+    if (status === "Open")
+      return "bg-emerald-100 text-emerald-700 border border-emerald-200";
+    if (status === "Overdue")
+      return "bg-rose-100 text-rose-700 border border-rose-200";
+    return "bg-blue-100 text-blue-700 border border-blue-200";
+  };
 
   return (
-    <div className="ml-[60px] pt-16 p-6 h-screen flex flex-col bg-gray-50 text-[13px] text-gray-700">
-
-      {/* ================= TOP BAR ================= */}
-      <div className="flex items-center justify-between px-4 py-3 border-b bg-white">
-
-        {/* FILTER CHIPS */}
-        <div className="flex gap-2 overflow-x-auto">
+    <div className="ml-[60px] pt-16 h-screen flex flex-col bg-slate-50 text-sm text-slate-700">
+      {/* TOP BAR */}
+      <div className="bg-white border-b px-6 py-4 flex items-center justify-between">
+        <div className="flex gap-2">
           {[
-            "My Tasks",
-            "My Open Tasks Today",
-            "My Open Tasks Tomorrow",
-            "My High Priority Tasks",
-          ].map((f, i) => (
-            <div
+            "My Tasks (12)",
+            "Today (4)",
+            "Tomorrow (3)",
+            "High Priority (5)",
+          ].map((item, i) => (
+            <button
               key={i}
-              className="px-3 py-1 border rounded-full text-xs cursor-pointer hover:bg-blue-50"
+              className="px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-200 transition"
             >
-              {f}
-            </div>
+              {item}
+            </button>
           ))}
         </div>
 
-        {/* RIGHT ACTIONS */}
         <div className="flex items-center gap-3">
-          <button className="p-2 border rounded">
+          <button className="p-2 border rounded-xl hover:bg-slate-100 transition">
             <RefreshCw size={16} />
           </button>
 
           <div className="relative">
-            <Search className="absolute left-2 top-2.5 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-3 text-slate-400 w-4 h-4" />
             <input
-              placeholder="Search"
-              className="pl-7 pr-3 py-2 border rounded"
+              placeholder="Search tasks"
+              className="pl-9 pr-4 py-2 rounded-xl border border-slate-200"
             />
           </div>
 
           <button
             onClick={() => setShowQuick(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded"
+            className="bg-blue-600 text-white px-5 py-2 rounded-xl hover:bg-blue-700 active:scale-95 transition"
           >
-            Add
+            Add Task
           </button>
         </div>
       </div>
 
-      {/* ================= MAIN ================= */}
+      {/* BODY */}
       <div className="flex flex-1 overflow-hidden">
-
-        {/* ================= LEFT LIST ================= */}
-        <div className="w-[320px] border-r bg-white overflow-y-auto">
-
-          {tasks.map((t) => (
+        {/* LEFT SIDEBAR */}
+        <div className="w-[340px] bg-white border-r overflow-y-auto">
+          {tasks.map((task) => (
             <div
-              key={t.id}
-              onClick={() => setSelectedTask(t)}
-              className="p-4 border-b cursor-pointer hover:bg-gray-50"
+              key={task.id}
+              onClick={() => setSelectedTask(task)}
+              className={`p-4 cursor-pointer border-b transition hover:bg-slate-50 ${
+                selectedTask?.id === task.id
+                  ? "bg-blue-50 border-r-4 border-blue-600"
+                  : ""
+              }`}
             >
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-800">{t.title}</span>
+              <div className="flex justify-between items-start">
+                <h3 className="font-semibold text-slate-900">
+                  {task.title}
+                </h3>
                 <MoreVertical size={16} />
               </div>
 
-              <div className="text-xs mt-2 text-gray-500">
-                {t.owner}
+              <div className="mt-2 text-xs text-slate-500">
+                <p>{task.owner}</p>
+                <p className="tabular-nums">{task.due}</p>
               </div>
 
-              <div className="text-xs text-gray-500">{t.due}</div>
+              <span
+                className={`inline-block mt-3 px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(
+                  task.status
+                )}`}
+              >
+                {task.status}
+              </span>
             </div>
           ))}
         </div>
 
-        {/* ================= RIGHT DETAIL ================= */}
+        {/* RIGHT DETAIL */}
         <div className="flex-1 p-6 overflow-y-auto">
-
           {selectedTask ? (
             <>
               {/* HEADER */}
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-800">
-                  {selectedTask.title}
-                </h2>
+              <div className="flex justify-between items-center mb-5">
+                <div>
+                  <h1 className="text-2xl font-bold text-slate-900">
+                    {selectedTask.title}
+                  </h1>
+                  <p className="text-slate-500 mt-1">
+                    Manage and track task execution
+                  </p>
+                </div>
 
                 <div className="flex gap-2">
-                  <button className="p-2 border rounded">
+                  <button className="p-2 border rounded-xl hover:bg-slate-100">
                     <Pencil size={16} />
                   </button>
+                  <button className="p-2 border rounded-xl hover:bg-slate-100">
+                    <Trash2 size={16} />
+                  </button>
+                  <button className="p-2 border rounded-xl hover:bg-slate-100">
+                    <Share2 size={16} />
+                  </button>
 
-                  <button className="px-3 py-2 border rounded">
-                    Mark as complete
+                  <button
+                    onClick={handleComplete}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700"
+                  >
+                    Mark Complete
                   </button>
                 </div>
               </div>
 
-              {/* INFO GRID */}
-              <div className="border rounded p-4 grid grid-cols-3 gap-4 text-sm bg-white">
+              {/* INFO CARDS */}
+              <div className="grid grid-cols-3 gap-4">
+                <InfoCard
+                  icon={<CheckCircle2 size={18} />}
+                  title="Status"
+                  value={selectedTask.status}
+                />
 
-                <div>
-                  <p className="text-gray-400 text-xs">Status</p>
-                  <p>{selectedTask.status}</p>
-                </div>
+                <InfoCard
+                  icon={<User size={18} />}
+                  title="Assigned To"
+                  value={selectedTask.owner}
+                />
 
-                <div>
-                  <p className="text-gray-400 text-xs">Assigned To</p>
-                  <p>{selectedTask.owner}</p>
-                </div>
-
-                <div>
-                  <p className="text-gray-400 text-xs">Due Date</p>
-                  <p>{selectedTask.due}</p>
-                </div>
+                <InfoCard
+                  icon={<Calendar size={18} />}
+                  title="Due Date"
+                  value={selectedTask.due}
+                />
               </div>
 
               {/* NOTES */}
-              <div className="mt-6 bg-white border rounded p-4">
-                <h3 className="font-medium mb-2">Notes</h3>
+              <div className="mt-6 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <h3 className="font-semibold text-slate-900 mb-3">
+                  Notes & Updates
+                </h3>
 
                 <textarea
-                  placeholder="Do you have any notes to add?"
-                  className="w-full border rounded p-3 h-40"
+                  placeholder="Add notes, updates, reminders..."
+                  className="w-full h-40 border rounded-xl p-4"
                 />
 
-                <div className="flex justify-end mt-3">
-                  <button className="bg-blue-600 text-white px-4 py-2 rounded">
-                    Add
+                <div className="flex justify-end mt-4">
+                  <button className="bg-blue-600 text-white px-5 py-2 rounded-xl">
+                    Save Note
                   </button>
                 </div>
               </div>
             </>
           ) : (
-            <div className="text-center text-gray-400 mt-20">
-              Oops, there is no data
-            </div>
+            <EmptyState setShowQuick={setShowQuick} />
           )}
         </div>
       </div>
 
-      {/* ================= ADD TASK DRAWER ================= */}
-      {showDrawer && (
-        <AddTaskDrawer onClose={() => setShowDrawer(false)} />
-      )}
+      {/* DRAWERS */}
+      {showDrawer && <AddTaskDrawer onClose={() => setShowDrawer(false)} />}
 
-      {/* ================= QUICK ADD ================= */}
       {showQuick && (
-        <QuickAddTask onClose={() => setShowQuick(false)} />
-      )}
-             {showQuick && (
         <QuickAddTask
-            onClose={() => setShowQuick(false)}
-            onOpenDrawer={() => {
+          onClose={() => setShowQuick(false)}
+          onOpenDrawer={() => {
             setShowQuick(false);
             setShowDrawer(true);
-            }}
+          }}
         />
-        )}
+      )}
     </div>
   );
 }
 
-/* ================= DRAWER ================= */
+/* COMPONENTS */
+
+function InfoCard({ icon, title, value }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
+      <div className="flex items-center gap-2 text-slate-500 text-xs mb-2">
+        {icon}
+        {title}
+      </div>
+      <p className="font-semibold text-slate-900">{value}</p>
+    </div>
+  );
+}
+
+function EmptyState({ setShowQuick }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center">
+      <ClipboardList size={60} className="text-slate-300 mb-4" />
+      <h2 className="text-2xl font-bold text-slate-900">
+        Focus on what matters
+      </h2>
+      <p className="text-slate-500 mt-2">
+        Create your first task and start tracking work.
+      </p>
+
+      <button
+        onClick={() => setShowQuick(true)}
+        className="mt-5 bg-blue-600 text-white px-5 py-3 rounded-xl"
+      >
+        Create Task
+      </button>
+    </div>
+  );
+}
 
 function AddTaskDrawer({ onClose }) {
   return (
     <div className="fixed inset-0 flex z-50">
       <div className="flex-1 bg-black/30" onClick={onClose}></div>
 
-      <div className="w-[500px] bg-white h-full p-6 overflow-y-auto">
-
-        <div className="flex justify-between mb-4">
-          <h2 className="font-semibold text-lg">Add Task</h2>
+      <div className="w-[520px] bg-white h-full p-6 overflow-y-auto shadow-2xl">
+        <div className="flex justify-between mb-6">
+          <h2 className="font-bold text-xl">Create Task</h2>
           <button onClick={onClose}>
             <X />
           </button>
         </div>
 
         <div className="space-y-4">
+          <input
+            placeholder="Task title"
+            className="w-full border rounded-xl px-4 py-3"
+          />
 
-          <div>
-            <label className="text-xs font-medium">
-              Task Name <span className="text-red-500">*</span>
-            </label>
-            <input className="w-full border px-3 py-2 rounded" />
-          </div>
+          <select className="w-full border rounded-xl px-4 py-3">
+            <option>Open</option>
+            <option>Completed</option>
+          </select>
 
-          <div>
-            <label className="text-xs font-medium">
-              Status <span className="text-red-500">*</span>
-            </label>
-            <select className="w-full border px-3 py-2 rounded">
-              <option>Open</option>
-              <option>Completed</option>
-            </select>
-          </div>
+          <input
+            type="date"
+            className="w-full border rounded-xl px-4 py-3"
+          />
 
-          <div>
-            <label className="text-xs font-medium">
-              Due Date <span className="text-red-500">*</span>
-            </label>
-            <input type="datetime-local" className="w-full border px-3 py-2 rounded" />
-          </div>
-
-          <div>
-            <label className="text-xs font-medium">
-              Assigned To <span className="text-red-500">*</span>
-            </label>
-            <input className="w-full border px-3 py-2 rounded" />
-          </div>
+          <input
+            placeholder="Assign to"
+            className="w-full border rounded-xl px-4 py-3"
+          />
         </div>
 
-        <div className="mt-6 flex justify-end gap-2">
-          <button onClick={onClose} className="border px-4 py-2 rounded">
+        <div className="flex justify-end gap-2 mt-6">
+          <button onClick={onClose} className="border px-4 py-2 rounded-xl">
             Cancel
           </button>
-
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Save
+          <button className="bg-blue-600 text-white px-4 py-2 rounded-xl">
+            Save Task
           </button>
         </div>
       </div>
@@ -246,50 +319,44 @@ function AddTaskDrawer({ onClose }) {
   );
 }
 
-/* ================= QUICK ADD ================= */
-
-function QuickAddTask({ onClose ,onOpenDrawer }) {
+function QuickAddTask({ onClose, onOpenDrawer }) {
   return (
-    <div className="fixed inset-0 flex items-start justify-center z-50 pt-24">
-      <div className="bg-[#1f2937] text-white w-[420px] rounded-lg p-4 shadow-lg">
-
-        {/* HEADER */}
-        <div className="flex justify-between items-center mb-3">
-          <h3 className="text-sm font-medium">Quick Add Task</h3>
+    <div className="fixed inset-0 flex items-start justify-center pt-24 z-50">
+      <div className="w-[460px] rounded-2xl bg-slate-900 text-white shadow-2xl p-5">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold">Quick Add Task</h3>
           <button onClick={onClose}>
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* SHORTCUTS */}
         <div className="flex gap-2 mb-3">
-          <button className="bg-gray-700 px-3 py-2 rounded text-xs">
+          <button className="px-3 py-2 bg-slate-800 rounded-lg text-xs">
             Tomorrow
           </button>
-          <button className="bg-gray-700 px-3 py-2 rounded text-xs">
-            @Assigned To
+          <button className="px-3 py-2 bg-slate-800 rounded-lg text-xs">
+            Assign User
           </button>
-          <button className="bg-gray-700 px-3 py-2 rounded text-xs">
+          <button className="px-3 py-2 bg-slate-800 rounded-lg text-xs">
             Priority
           </button>
         </div>
 
-        {/* INPUT */}
         <textarea
-          placeholder="Enter a new task: E.g. Follow up with @User"
-          className="w-full p-3 rounded bg-gray-100 text-black"
+          placeholder="Enter task... Press Enter to Save"
+          className="w-full rounded-xl bg-slate-100 text-black p-4"
+          rows={4}
         />
 
-        {/* FOOTER */}
-        <div className="flex justify-between items-center mt-3">
-            <span
-                onClick={onOpenDrawer}
-                className="text-xs text-blue-400 cursor-pointer hover:underline"
-            >
+        <div className="flex justify-between items-center mt-4">
+          <button
+            onClick={onOpenDrawer}
+            className="text-blue-400 border border-slate-700 px-3 py-2 rounded-lg hover:bg-slate-800"
+          >
             Additional Details
-            </span>
+          </button>
 
-          <button className="bg-white text-black px-4 py-2 rounded text-sm">
+          <button className="bg-blue-600 px-4 py-2 rounded-xl">
             Add Task
           </button>
         </div>

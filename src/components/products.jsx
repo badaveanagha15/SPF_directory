@@ -1,86 +1,79 @@
-import {useState } from "react";
-import AddLeadModal from "./addlead";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
   Mail,
   Pencil,
   MessageCircle,
   Download,
   Trash2,
-  Phone,
   Loader2,
   Upload,
   RefreshCw,
   MoreHorizontal,
-  User,
+  Package,
+  Boxes,
+  Wrench,
+  BadgeIndianRupee,
 } from "lucide-react";
 
-const leadsData = [
+const productsData = [
   {
-    name: "Rinku Singh",
-    id: 1,
-    initials: "RS",
-    status: "New",
-    mobile: "+91 9650394795",
-    email: "rinku@email.com",
-    owner: "Akshay",
+    name: "Solar Generator",
+    sku: "SKU-001",
+    type: "Hardware",
+    category: "Energy",
+    price: "₹45,000",
+    status: "In Stock",
     created: "2026-04-15",
   },
   {
-    name: "Akshay Mehta",
-    id: 2,
-    initials: "AM",
-    status: "Converted",
-    mobile: "+91 9876543210",
-    email: "akshay@email.com",
-    owner: "Rohit",
+    name: "CRM Setup Service",
+    sku: "SKU-002",
+    type: "Service",
+    category: "Consulting",
+    price: "₹15,000",
+    status: "Active",
     created: "2026-04-12",
   },
   {
-    name: "Virat Sharma",
-    id: 3,
-    initials: "VS",
-    status: "Open",
-    mobile: "+91 9988776655",
-    email: "virat@email.com",
-    owner: "Rinku",
+    name: "Vault Pro Plan",
+    sku: "SKU-003",
+    type: "Subscription",
+    category: "Software",
+    price: "₹999/mo",
+    status: "Low Stock",
     created: "2026-04-10",
   },
 ];
 
-export default function Leads() {
+export default function Products() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState([]);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [toast, setToast] = useState("");
-  const [open, setOpen] = useState(false);
-
-  // FILTER STATE
   const [activeFilter, setActiveFilter] = useState("All");
-
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
-  // FILTERED DATA
-  const filtered = leadsData.filter((lead) => {
-    const matchesSearch = lead.name
+  /* FILTER */
+  const filtered = productsData.filter((product) => {
+    const matchesSearch = product.name
       .toLowerCase()
       .includes(search.toLowerCase());
 
     const matchesFilter =
       activeFilter === "All"
         ? true
-        : activeFilter === "Open"
-        ? lead.status === "Open" || lead.status === "New"
-        : lead.status === "Converted";
+        : activeFilter === "Software"
+        ? product.category === "Software"
+        : product.type === activeFilter;
 
     return matchesSearch && matchesFilter;
   });
 
-  const selectedLeads = selected.map((i) => filtered[i]);
+  const selectedProducts = selected.map((i) => filtered[i]);
 
-  /* ---------------- SELECT ---------------- */
+  /* SELECT */
 
   const toggleSelectAll = (e) => {
     if (e.target.checked) {
@@ -98,14 +91,14 @@ export default function Leads() {
     );
   };
 
-  /* ---------------- ACTIONS ---------------- */
+  /* ACTIONS */
 
   const handleExport = () => {
-    console.log("Export:", selectedLeads);
+    console.log("Export:", selectedProducts);
   };
 
   const handleImport = () => {
-    setToast("File uploaded successfully ✅");
+    setToast("Products imported successfully ✅");
 
     setTimeout(() => {
       setToast("");
@@ -126,8 +119,10 @@ export default function Leads() {
     }, 2000);
   };
 
+  const filters = ["All", "Hardware", "Software", "Service"];
+
   return (
-    <div className="ml-[60px]  p-6 pt-20 bg-[#F1F5F9] min-h-screen">
+    <div className="ml-[60px] pt-16 p-6 bg-[#F1F5F9] min-h-screen">
       {/* TOAST */}
 
       {toast && (
@@ -144,7 +139,7 @@ export default function Leads() {
 
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-slate-700">
-              {selected.length} Leads selected
+              {selected.length} Products selected
             </span>
 
             <div className="h-5 w-px bg-slate-300"></div>
@@ -191,11 +186,11 @@ export default function Leads() {
 
         <div>
           <h1 className="text-2xl font-black text-slate-800">
-            Leads
+            Products
           </h1>
 
           <p className="text-sm text-slate-500 mt-1">
-            Leads &gt; List | Total Leads: {filtered.length}
+            Products &gt; List | Total Products: {filtered.length}
           </p>
         </div>
 
@@ -231,16 +226,9 @@ export default function Leads() {
             Sync
           </button>
 
-          <button
-            onClick={() => setOpen(true)}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
-          >
-            + Add Lead
+          <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium">
+            + Add Product
           </button>
-
-          {open && (
-            <AddLeadModal onClose={() => setOpen(false)} />
-          )}
         </div>
       </div>
 
@@ -252,7 +240,7 @@ export default function Leads() {
 
           <input
             type="text"
-            placeholder="Search leads..."
+            placeholder="Search products..."
             className="flex-1 min-w-[250px] px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -260,38 +248,19 @@ export default function Leads() {
 
           {/* FILTERS */}
 
-          <button
-            onClick={() => setActiveFilter("All")}
-            className={`px-4 py-2 rounded-full text-sm transition ${
-              activeFilter === "All"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            All Leads
-          </button>
-
-          <button
-            onClick={() => setActiveFilter("Open")}
-            className={`px-4 py-2 rounded-full text-sm transition ${
-              activeFilter === "Open"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            Open
-          </button>
-
-          <button
-            onClick={() => setActiveFilter("Converted")}
-            className={`px-4 py-2 rounded-full text-sm transition ${
-              activeFilter === "Converted"
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            }`}
-          >
-            Converted
-          </button>
+          {filters.map((item) => (
+            <button
+              key={item}
+              onClick={() => setActiveFilter(item)}
+              className={`px-4 py-2 rounded-full text-sm transition ${
+                activeFilter === item
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              {item}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -309,11 +278,12 @@ export default function Leads() {
                 />
               </th>
 
-              <th className="p-3 text-left">Lead Name</th>
+              <th className="p-3 text-left">Product Name</th>
+              <th className="p-3 text-left">SKU</th>
+              <th className="p-3 text-left">Type</th>
+              <th className="p-3 text-left">Category</th>
+              <th className="p-3 text-left">Price</th>
               <th className="p-3 text-left">Status</th>
-              <th className="p-3 text-left">Mobile</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-left">Owner</th>
               <th className="p-3 text-left">Created</th>
 
               <th className="p-3 text-left">
@@ -323,9 +293,9 @@ export default function Leads() {
           </thead>
 
           <tbody>
-            {filtered.map((lead, index) => (
+            {filtered.map((product, index) => (
               <tr
-                onClick={() => navigate(`/leads/${lead.id}`)}
+                onClick={() => navigate(`/products/${product.id}`)}
                 key={index}
                 className="border-t border-slate-100 hover:bg-slate-50 transition cursor-pointer"
               >
@@ -338,58 +308,69 @@ export default function Leads() {
                   />
                 </td>
 
-                {/* NAME */}
+                {/* PRODUCT */}
 
                 <td className="p-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-semibold text-xs">
-                      {lead.initials}
+                    <div className="w-10 h-10 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center">
+                      <Package size={18} />
                     </div>
 
                     <div>
                       <div className="font-semibold text-slate-800">
-                        {lead.name}
+                        {product.name}
                       </div>
 
-                      <div className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
-                        <User size={11} />
-                        Lead Contact
+                      <div className="text-xs text-slate-500 mt-0.5">
+                        Product Item
                       </div>
                     </div>
+                  </div>
+                </td>
+
+                {/* SKU */}
+
+                <td className="p-3 text-slate-700">
+                  {product.sku}
+                </td>
+
+                {/* TYPE */}
+
+                <td className="p-3">
+                  <TypeBadge type={product.type} />
+                </td>
+
+                {/* CATEGORY */}
+
+                <td className="p-3">
+                  <div className="flex items-center gap-2 text-slate-700">
+                    <Boxes size={14} />
+                    {product.category}
+                  </div>
+                </td>
+
+                {/* PRICE */}
+
+                <td className="p-3 font-medium text-slate-800">
+                  <div className="flex items-center gap-1">
+                    <BadgeIndianRupee size={14} />
+                    {product.price}
                   </div>
                 </td>
 
                 {/* STATUS */}
 
                 <td className="p-3">
-                  <span
-                    className={`px-2.5 py-1 text-xs rounded-full font-medium ${
-                      lead.status === "New"
-                        ? "bg-blue-100 text-blue-700"
-                        : lead.status === "Converted"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {lead.status}
-                  </span>
+                  <StatusBadge status={product.status} />
                 </td>
 
-                <td className="p-3 text-slate-700">
-                  {lead.mobile}
-                </td>
+                {/* CREATED */}
 
                 <td className="p-3 text-slate-700">
-                  {lead.email}
+                  {product.created}
                 </td>
 
-                <td className="p-3 text-slate-700">
-                  {lead.owner}
-                </td>
-
-                <td className="p-3 text-slate-700">
-                  {lead.created}
-                </td>
+                {/* ACTION */}
 
                 <td className="p-3 cursor-pointer text-slate-500 hover:text-slate-700">
                   <MoreHorizontal size={16} />
@@ -403,7 +384,7 @@ export default function Leads() {
 
         {filtered.length === 0 && (
           <div className="py-10 text-center text-slate-500 text-sm">
-            No Leads Found
+            No Products Found
           </div>
         )}
       </div>
@@ -429,7 +410,7 @@ export default function Leads() {
         <div className="p-4 border-b font-semibold text-slate-800">
           {selected.length > 1
             ? "Bulk Summary"
-            : "Lead Details"}
+            : "Product Details"}
         </div>
 
         <div className="p-4 space-y-4">
@@ -437,8 +418,8 @@ export default function Leads() {
 
           {selected.length > 1 && (
             <>
-              {selectedLeads.map((lead, i) => (
-                <div key={i}>• {lead.name}</div>
+              {selectedProducts.map((product, i) => (
+                <div key={i}>• {product.name}</div>
               ))}
 
               <button className="w-full bg-blue-600 text-white py-2 rounded-lg mt-4">
@@ -452,23 +433,47 @@ export default function Leads() {
           {selected.length === 1 && (
             <>
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center">
-                  {selectedLeads[0].initials}
+                <div className="w-12 h-12 bg-blue-600 text-white rounded-xl flex items-center justify-center">
+                  <Package size={20} />
                 </div>
 
                 <div>
                   <div className="font-semibold">
-                    {selectedLeads[0].name}
+                    {selectedProducts[0]?.name}
                   </div>
 
                   <div className="text-sm text-slate-500">
-                    {selectedLeads[0].status}
+                    {selectedProducts[0]?.category}
                   </div>
                 </div>
               </div>
 
+              <div className="space-y-3 text-sm text-slate-600">
+                <div className="flex justify-between">
+                  <span>SKU</span>
+                  <span className="font-medium">
+                    {selectedProducts[0]?.sku}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Price</span>
+                  <span className="font-medium">
+                    {selectedProducts[0]?.price}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Status</span>
+
+                  <StatusBadge
+                    status={selectedProducts[0]?.status}
+                  />
+                </div>
+              </div>
+
               <div className="flex gap-4 mt-4 text-slate-600">
-                <Phone className="cursor-pointer" />
+                <Wrench className="cursor-pointer" />
                 <MessageCircle className="cursor-pointer" />
               </div>
             </>
@@ -478,7 +483,7 @@ export default function Leads() {
 
           {selected.length === 0 && (
             <p className="text-slate-500 text-sm">
-              No lead selected
+              No product selected
             </p>
           )}
         </div>
@@ -486,13 +491,52 @@ export default function Leads() {
 
       {/* DRAWER BUTTON */}
 
-      {/* <div
+      <div
         onClick={() => setDrawerOpen(!drawerOpen)}
         className="fixed right-0 top-1/2 h-[120px] w-[40px] bg-blue-600 text-white flex items-center justify-center rotate-180 cursor-pointer z-50 shadow-lg"
         style={{ writingMode: "vertical-rl" }}
       >
         Details
-      </div> */}
+      </div>
     </div>
+  );
+}
+
+function TypeBadge({ type }) {
+  const styles = {
+    Hardware: "bg-blue-100 text-blue-700",
+    Service: "bg-purple-100 text-purple-700",
+    Subscription: "bg-teal-100 text-teal-700",
+  };
+
+  const icons = {
+    Hardware: <Package size={12} />,
+    Service: <Wrench size={12} />,
+    Subscription: <Boxes size={12} />,
+  };
+
+  return (
+    <span
+      className={`flex items-center gap-1 w-fit px-2.5 py-1 text-xs rounded-full font-medium ${styles[type]}`}
+    >
+      {icons[type]}
+      {type}
+    </span>
+  );
+}
+
+function StatusBadge({ status }) {
+  const styles = {
+    "In Stock": "bg-green-100 text-green-700",
+    "Low Stock": "bg-red-100 text-red-700",
+    Active: "bg-blue-100 text-blue-700",
+  };
+
+  return (
+    <span
+      className={`px-2.5 py-1 text-xs rounded-full font-medium ${styles[status]}`}
+    >
+      {status}
+    </span>
   );
 }

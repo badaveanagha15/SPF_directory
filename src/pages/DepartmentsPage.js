@@ -1,23 +1,22 @@
 import React from 'react'
 import Header from '../components/header'
 import Sidebar from '../components/sidebar'
-import Deals from '../components/deals';
+import DepartmentsList from '../components/DepartmentsList';
 import { Handshake} from "lucide-react";
 
-function DealsPage({type}) {
+function DepartmentsPage() {
     return (
         <>
         <Header
-            title="Deals"
-          
+            title="Departments"
             icon={<Handshake className="w-5 h-5" />}
         />
         <Sidebar />
-        <Deals type={type}/>
+        <DepartmentsList />
         
         </>
         
     )
 }
 
-export default DealsPage;
+export default DepartmentsPage;
